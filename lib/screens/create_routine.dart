@@ -168,7 +168,7 @@ class _CreateRoutineState extends State<CreateRoutine> {
       selectedTime = timeOfDay;
       setState(() {
         _timeController.text =
-            "${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}";
+            "${selectedTime.hour.toString()}:${selectedTime.minute.toString()} ${selectedTime.period.name}";
       });
     }
   }
@@ -189,10 +189,17 @@ class _CreateRoutineState extends State<CreateRoutine> {
   _readCategory() async {
     final categoryCollection = widget.isar.categorys;
     final getCategories = await categoryCollection.where().findAll();
-    setState(() {
-      dropdownValue = null;
-      categories = getCategories;
-    });
+    if (getCategories.isNotEmpty) {
+      setState(() {
+        categories = getCategories;
+        dropdownValue = categories!.first; // Set the first category as default
+      });
+    } else {
+      setState(() {
+        categories = [];
+        dropdownValue = null;
+      });
+    }
   }
 
   addRoutine() async {
@@ -200,8 +207,11 @@ class _CreateRoutineState extends State<CreateRoutine> {
     final newRoutine = Routine()
       ..title = _titleController.text
       ..startTime = _timeController.text
-      ..day = dropdownDay
-      ..category.value = dropdownValue;
+      ..day = dropdownDay;
+    if (dropdownValue != null) {
+      newRoutine.category.value = dropdownValue; // Linking the category
+      print('not null');
+    }
 
     await widget.isar
         .writeTxn<int>(() async => await routineCollection.put(newRoutine));

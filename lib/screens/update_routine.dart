@@ -227,14 +227,22 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
 
   _setRoutineInfo() async {
     await _readCategory();
+
     _titleController.text = widget.routine.title;
     _timeController.text = widget.routine.startTime;
     dropdownDay = widget.routine.day;
+
     await widget.routine.category.load();
-    int? getId = widget.routine.category.value?.id;
-    setState(() {
-      dropdownValue = categories?[getId! - 1];
-    });
+    final findCategory = widget.routine.category.value;
+    int x = 0;
+    for (int i = 0; i < categories!.length; i++) {
+      if (categories?[i].id == findCategory?.id) {
+        x = i;
+        setState(() {
+          dropdownValue = categories?[x];
+        });
+      }
+    }
   }
 
   updateRoutine() async {
