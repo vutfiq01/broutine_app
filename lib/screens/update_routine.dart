@@ -1,6 +1,5 @@
 import 'package:broutine_app/collections/category.dart';
 import 'package:broutine_app/collections/routine.dart';
-import 'package:broutine_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -279,8 +278,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
     });
 
     if (mounted) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => MyApp(isar: widget.isar)));
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 }

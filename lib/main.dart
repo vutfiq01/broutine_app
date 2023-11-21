@@ -96,6 +96,14 @@ class _MainPageState extends State<MainPage> {
                       hintText: "Search routine",
                       hintStyle: TextStyle(fontStyle: FontStyle.italic))),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                feedback,
+                style: TextStyle(
+                    color: feedbackColor, fontStyle: FontStyle.italic),
+              ),
+            ),
             FutureBuilder(
               future: _buildWidgets(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
