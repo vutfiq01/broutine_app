@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final dir = await getApplicationSupportDirectory();
+  final dir = await getApplicationDocumentsDirectory();
   final isarDb = await Isar.open(
     [RoutineSchema, CategorySchema],
     directory: dir.path,
@@ -152,7 +152,7 @@ class _MainPageState extends State<MainPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 5.0, bottom: 2.0),
                 child: Text(
-                  routines![i].title,
+                  routines![i].title!,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

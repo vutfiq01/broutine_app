@@ -7,14 +7,14 @@ part 'routine.g.dart';
 class Routine {
   Id id = Isar.autoIncrement;
 
-  @Index(caseSensitive: false)
-  late String title;
+  @Index()
+  String? title;
 
   @Index()
-  late String startTime;
+  String? startTime;
 
   @Index(caseSensitive: false)
-  late String day;
+  String? day;
 
   @Index(composite: [CompositeIndex('title')])
   final category = IsarLink<Category>();

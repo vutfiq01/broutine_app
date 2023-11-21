@@ -7,5 +7,5 @@ class Category {
   Id id = Isar.autoIncrement;
 
   @Index(unique: true)
-  late String name;
+  String? name;
 }

@@ -66,7 +66,7 @@ class _CreateRoutineState extends State<CreateRoutine> {
                     items: categories
                         ?.map<DropdownMenuItem<Category>>((Category nvalue) {
                       return DropdownMenuItem<Category>(
-                          value: nvalue, child: Text(nvalue.name));
+                          value: nvalue, child: Text(nvalue.name!));
                     }).toList(),
                     onChanged: (Category? newValue) {
                       setState(() {
@@ -166,9 +166,15 @@ class _CreateRoutineState extends State<CreateRoutine> {
 
     if (timeOfDay != null && timeOfDay != selectedTime) {
       selectedTime = timeOfDay;
+      var minute = '';
+      if (selectedTime.minute > 9) {
+        minute = selectedTime.minute.toString();
+      } else {
+        minute = '0${selectedTime.minute}';
+      }
       setState(() {
         _timeController.text =
-            "${selectedTime.hour.toString()}:${selectedTime.minute.toString()} ${selectedTime.period.name}";
+            "${selectedTime.hour.toString()}:$minute ${selectedTime.period.name}";
       });
     }
   }
@@ -209,12 +215,12 @@ class _CreateRoutineState extends State<CreateRoutine> {
       ..startTime = _timeController.text
       ..day = dropdownDay;
     if (dropdownValue != null) {
-      newRoutine.category.value = dropdownValue; // Linking the category
-      print('not null');
+      newRoutine.category.value = dropdownValue;
     }
 
-    await widget.isar
-        .writeTxn<int>(() async => await routineCollection.put(newRoutine));
+    await widget.isar.writeTxnSync(() async {
+      routineCollection.putSync(newRoutine);
+    });
 
     _titleController.clear();
     _timeController.clear();

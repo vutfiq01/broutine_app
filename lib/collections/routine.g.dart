@@ -48,7 +48,7 @@ const RoutineSchema = CollectionSchema(
         IndexPropertySchema(
           name: r'title',
           type: IndexType.hash,
-          caseSensitive: false,
+          caseSensitive: true,
         )
       ],
     ),
@@ -100,9 +100,24 @@ int _routineEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.day.length * 3;
-  bytesCount += 3 + object.startTime.length * 3;
-  bytesCount += 3 + object.title.length * 3;
+  {
+    final value = object.day;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.startTime;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.title;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -124,10 +139,10 @@ Routine _routineDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Routine();
-  object.day = reader.readString(offsets[0]);
+  object.day = reader.readStringOrNull(offsets[0]);
   object.id = id;
-  object.startTime = reader.readString(offsets[1]);
-  object.title = reader.readString(offsets[2]);
+  object.startTime = reader.readStringOrNull(offsets[1]);
+  object.title = reader.readStringOrNull(offsets[2]);
   return object;
 }
 
@@ -139,11 +154,11 @@ P _routineDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -236,7 +251,28 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterWhereClause> titleEqualTo(String title) {
+  QueryBuilder<Routine, Routine, QAfterWhereClause> titleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'title',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> titleIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'title',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> titleEqualTo(
+      String? title) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'title',
@@ -246,7 +282,7 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
   }
 
   QueryBuilder<Routine, Routine, QAfterWhereClause> titleNotEqualTo(
-      String title) {
+      String? title) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -280,8 +316,28 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'startTime',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'startTime',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeEqualTo(
-      String startTime) {
+      String? startTime) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'startTime',
@@ -291,7 +347,7 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
   }
 
   QueryBuilder<Routine, Routine, QAfterWhereClause> startTimeNotEqualTo(
-      String startTime) {
+      String? startTime) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -325,7 +381,27 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterWhereClause> dayEqualTo(String day) {
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'day',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'day',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayEqualTo(String? day) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'day',
@@ -334,7 +410,7 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
     });
   }
 
-  QueryBuilder<Routine, Routine, QAfterWhereClause> dayNotEqualTo(String day) {
+  QueryBuilder<Routine, Routine, QAfterWhereClause> dayNotEqualTo(String? day) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -371,8 +447,24 @@ extension RoutineQueryWhere on QueryBuilder<Routine, Routine, QWhereClause> {
 
 extension RoutineQueryFilter
     on QueryBuilder<Routine, Routine, QFilterCondition> {
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'day',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> dayIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'day',
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -385,7 +477,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -400,7 +492,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -415,8 +507,8 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> dayBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -553,8 +645,24 @@ extension RoutineQueryFilter
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'startTime',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'startTime',
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -567,7 +675,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -582,7 +690,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -597,8 +705,8 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> startTimeBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -683,8 +791,24 @@ extension RoutineQueryFilter
     });
   }
 
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> titleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'title',
+      ));
+    });
+  }
+
+  QueryBuilder<Routine, Routine, QAfterFilterCondition> titleIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'title',
+      ));
+    });
+  }
+
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -697,7 +821,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -712,7 +836,7 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -727,8 +851,8 @@ extension RoutineQueryFilter
   }
 
   QueryBuilder<Routine, Routine, QAfterFilterCondition> titleBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -954,19 +1078,19 @@ extension RoutineQueryProperty
     });
   }
 
-  QueryBuilder<Routine, String, QQueryOperations> dayProperty() {
+  QueryBuilder<Routine, String?, QQueryOperations> dayProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'day');
     });
   }
 
-  QueryBuilder<Routine, String, QQueryOperations> startTimeProperty() {
+  QueryBuilder<Routine, String?, QQueryOperations> startTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'startTime');
     });
   }
 
-  QueryBuilder<Routine, String, QQueryOperations> titleProperty() {
+  QueryBuilder<Routine, String?, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'title');
     });

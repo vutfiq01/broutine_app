@@ -96,7 +96,7 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
                     items: categories
                         ?.map<DropdownMenuItem<Category>>((Category nvalue) {
                       return DropdownMenuItem<Category>(
-                          value: nvalue, child: Text(nvalue.name));
+                          value: nvalue, child: Text(nvalue.name!));
                     }).toList(),
                     onChanged: (Category? newValue) {
                       setState(() {
@@ -198,9 +198,15 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
 
     if (timeOfDay != null && timeOfDay != selectedTime) {
       selectedTime = timeOfDay;
+      var minute = '';
+      if (selectedTime.minute > 9) {
+        minute = selectedTime.minute.toString();
+      } else {
+        minute = '0${selectedTime.minute}';
+      }
       setState(() {
         _timeController.text =
-            "${selectedTime.hour.toString()}:${selectedTime.minute.toString()} ${selectedTime.period.name}";
+            "${selectedTime.hour.toString()}:$minute ${selectedTime.period.name}";
       });
     }
   }
@@ -228,9 +234,9 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
   _setRoutineInfo() async {
     await _readCategory();
 
-    _titleController.text = widget.routine.title;
-    _timeController.text = widget.routine.startTime;
-    dropdownDay = widget.routine.day;
+    _titleController.text = widget.routine.title!;
+    _timeController.text = widget.routine.startTime!;
+    dropdownDay = widget.routine.day!;
 
     await widget.routine.category.load();
     final findCategory = widget.routine.category.value;
@@ -253,8 +259,10 @@ class _UpdateRoutineState extends State<UpdateRoutine> {
       routine!
         ..title = _titleController.text
         ..startTime = _timeController.text
-        ..day = dropdownDay
-        ..category.value = dropdownValue;
+        ..day = dropdownDay;
+      if (dropdownValue != null) {
+        routine.category.value = dropdownValue;
+      }
 
       await routineCollection.put(routine);
       if (mounted) {
