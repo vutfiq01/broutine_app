@@ -227,7 +227,7 @@ class _CreateRoutineState extends State<CreateRoutine> {
     dropdownDay = 'monday';
     dropdownValue = null;
     if (mounted) {
-      Navigator.pop(context);
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 }

@@ -8,14 +8,12 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final dir = await getApplicationDocumentsDirectory();
-  final isarDb = await Isar.open(
-    [RoutineSchema, CategorySchema],
-    directory: dir.path,
-  );
-  runApp(MyApp(
-    isar: isarDb,
-  ));
+  final dir = await getApplicationSupportDirectory();
+  if (dir.existsSync()) {
+    final isar =
+        await Isar.open([RoutineSchema, CategorySchema], directory: dir.path);
+    runApp(MyApp(isar: isar));
+  }
 }
 
 class MyApp extends StatelessWidget {
